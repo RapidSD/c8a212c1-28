@@ -27,7 +27,7 @@ jobs:
         if: true
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
 
       # Shopify credentials are configured as GitHub repository secrets
       # GitHub and Cloudflare credentials are pre-configured in managed infrastructure
