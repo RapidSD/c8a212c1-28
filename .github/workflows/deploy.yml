@@ -1,0 +1,56 @@
+name: Deploy to Cloudflare Workers
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy to Cloudflare Workers
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+        if: matrix.package-manager == 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Shopify credentials are stored in the project's .env file
+      # GitHub and Cloudflare credentials are pre-configured in managed infrastructure
+      - name: Use project .env file for Shopify credentials
+        run: |
+          if [ -f .env ]; then
+            echo "✅ Using project .env file for Shopify configuration"
+            cat .env
+          else
+            echo "⚠️ No .env file found - Shopify integration may not work"
+          fi
+
+      - name: Deploy to Cloudflare Workers
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy
+          workingDirectory: .
+          
+      - name: Post deployment info
+        run: |
+          echo "🚀 Deployment completed!"
+          echo "📝 Your app should be available at: https://c8a212c1-28.workers.dev"
+          echo "🛍️ Shopify credentials are loaded from the project's .env file"
+          echo "☁️ GitHub and Cloudflare managed by deployment infrastructure"
