@@ -21,24 +21,28 @@ jobs:
           node-version: '18'
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
         with:
           version: 8
-        if: matrix.package-manager == 'pnpm'
+        if: true
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # Shopify credentials are stored in the project's .env file
+      # Shopify credentials are configured as GitHub repository secrets
       # GitHub and Cloudflare credentials are pre-configured in managed infrastructure
-      - name: Use project .env file for Shopify credentials
+      - name: Setup environment variables
         run: |
+          echo "✅ Using GitHub secrets for Shopify configuration"
+          echo "NEXT_PUBLIC_SHOPIFY_SHOP=${{ secrets.NEXT_PUBLIC_SHOPIFY_SHOP }}" >> .env
+          echo "NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN=${{ secrets.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN }}" >> .env
           if [ -f .env ]; then
-            echo "✅ Using project .env file for Shopify configuration"
-            cat .env
+            echo "📝 Environment file created successfully"
           else
-            echo "⚠️ No .env file found - Shopify integration may not work"
+            echo "⚠️ Failed to create environment file"
           fi
+      - name: Build project
+        run: pnpm run build
 
       - name: Deploy to Cloudflare Workers
         uses: cloudflare/wrangler-action@v3

@@ -3,23 +3,29 @@ main = "src/index.js"
 compatibility_date = "2024-01-01"
 compatibility_flags = ["nodejs_compat"]
 
+# Note: For Next.js projects, you may need to adapt this configuration
+# depending on your specific deployment needs. Next.js projects typically
+# require a different entry point and build configuration.
+
 [vars]
 # Environment variables go here
-# EXAMPLE_VAR = "example_value"
+# Shopify credentials will be loaded from GitHub repository secrets
+# NEXT_PUBLIC_SHOPIFY_SHOP = "your-shop.myshopify.com"
+# NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN = "your-storefront-token"
 
-# Uncomment and configure if using KV storage
+# KV storage configuration (if needed)
 # [[kv_namespaces]]
 # binding = "MY_KV_NAMESPACE"
 # id = "your-kv-namespace-id"
 # preview_id = "your-preview-kv-namespace-id"
 
-# Uncomment and configure if using D1 database
+# D1 database configuration (if needed)
 # [[d1_databases]]
 # binding = "DB"
 # database_name = "my-database"
 # database_id = "your-database-id"
 
-# Uncomment and configure if using R2 storage
+# R2 storage configuration (if needed)
 # [[r2_buckets]]
 # binding = "MY_BUCKET"
 # bucket_name = "my-bucket"
